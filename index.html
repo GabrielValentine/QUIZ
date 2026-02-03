@@ -31,6 +31,12 @@
       padding:9px 12px; border-radius:10px; cursor:pointer; font-weight:650;
     }
     .tab-btn.active{border-color:var(--red); color:var(--red);}
+    .tab-btn:disabled{
+      opacity:.45;
+      cursor:not-allowed;
+      border-color:var(--border);
+      color:var(--muted);
+    }
     .question-block{
       background:var(--card); border:1px solid var(--border); border-radius:14px;
       padding:16px 14px; margin:12px 0 14px 0; box-shadow:0 6px 18px rgba(0,0,0,.25);
@@ -80,13 +86,13 @@
     <h1 id="quizTitle" style="display:none;">VAN Protocol Quiz</h1>
     <div class="subheading" id="subtitle" style="display:none;">
       Challenge yourself with 30 multiple-choice questions about scam, misrepresentation, and spam in Meta's UFAC GTM protocols (VAN - Violating Actor Networks).
-      <br>Enter your name to personalize results. <b>80% (24/30) correct answers required to PASS.</b>
+      <br><b>80% (24/30) correct answers required to PASS.</b>
     </div>
 
     <div class="tabbar" id="tabbar" style="display:none;">
       <button class="tab-btn active" id="tabQuiz" onclick="gotoTab('quiz')">Quiz</button>
       <button class="tab-btn" id="tabResult" onclick="gotoTab('result')">Results</button>
-      <button class="tab-btn" id="tabAnswers" onclick="gotoTab('answers')">Correct Answers</button>
+      <button class="tab-btn" id="tabAnswers" onclick="gotoTab('answers')" disabled>Correct Answers</button>
       <button class="tab-btn" id="tabLeaderboard" onclick="gotoTab('leaderboard')">Leaderboard</button>
     </div>
 
@@ -302,13 +308,6 @@
       }
     ];
 
-    function byId(id){ return document.getElementById(id); }
-    function esc(s){
-      return String(s).replace(/[&<>"']/g, c => ({
-        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-      }[c]));
-    }
-
     function loadBoard(){
       try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); }
       catch { return {}; }
@@ -316,7 +315,6 @@
     function saveBoard(board){
       localStorage.setItem(STORAGE_KEY, JSON.stringify(board));
     }
-
     let leaderboard = loadBoard();
 
     function computeSortedBoard(){
@@ -335,10 +333,14 @@
 
       rows.forEach((r,i)=>{
         r.newRank=i+1;
-        r.rankMove = r.oldRank ? (r.oldRank - r.newRank) : 0; // + => moved up
+        r.rankMove = r.oldRank ? (r.oldRank - r.newRank) : 0;
       });
 
       return rows;
+    }
+
+    function updateTabAvailability(){
+      byId("tabAnswers").disabled = !hasSubmitted;
     }
 
     function setActiveTab(tab){
@@ -352,6 +354,11 @@
     }
 
     function gotoTab(tab){
+      // Block correct answers tab until quiz is submitted
+      if(tab === "answers" && !hasSubmitted){
+        tab = "quiz";
+      }
+
       hideAllAreas();
       setActiveTab(tab);
 
@@ -382,7 +389,7 @@
         <div class="panel">
           <h1 style="margin-top:0;">Welcome</h1>
           <div class="muted" style="margin-bottom:12px;">
-            Enter your name to begin. Date: <b>${DATE_STR}</b>
+            Enter your name to begin.
           </div>
           <form id="welcomeForm" autocomplete="off">
             <input id="userNameInput" type="text" maxlength="40" placeholder="Your name..." />
@@ -405,6 +412,8 @@
         userName = val;
         startQuiz();
       };
+
+      updateTabAvailability();
     }
 
     function startQuiz(){
@@ -418,6 +427,7 @@
       hasSubmitted = false;
       lastScore = 0;
 
+      updateTabAvailability();
       gotoTab("quiz");
     }
 
@@ -496,6 +506,7 @@
       });
 
       saveBoard(leaderboard);
+      updateTabAvailability();
       gotoTab("result");
     }
     window.submitQuiz = submitQuiz;
@@ -542,8 +553,6 @@
             &nbsp;|&nbsp; Best: <span class="good">${Number(entry.best||lastScore)}</span>
             &nbsp;|&nbsp; Change vs last attempt: <b>${deltaTxt}</b>
           </div>
-          <div class="muted" style="margin-top:6px;">Date: <b>${DATE_STR}</b></div>
-
           <div class="row-actions">
             <button onclick="retakeQuiz()">Retake Quiz</button>
             <button onclick="gotoTab('answers')">Correct Answers Tab</button>
@@ -620,6 +629,7 @@
       userAnswers = Array(questions.length).fill(null);
       hasSubmitted = false;
       lastScore = 0;
+      updateTabAvailability();
       gotoTab("quiz");
     }
     window.retakeQuiz = retakeQuiz;
