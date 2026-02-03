@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VAN Protocol Quiz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: #f5f6fa;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #2d3a4b;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 540px;
+            margin: 40px auto 0 auto;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 3px 14px rgba(34, 55, 150, 0.11);
+            padding: 32px 24px 32px 24px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #4267b2;
+            letter-spacing: -1px;
+        }
+        .subheading {
+            text-align: center;
+            color: #34495e;
+            font-size: 1.07em;
+            margin-bottom: 28px;
+            margin-top: 5px;
+        }
+        .date {
+            display: block;
+            text-align: center;
+            margin-bottom: 15px;
+            color: #8f99ac;
+            font-size: 1em;
+            font-weight: 400;
+        }
+        .question-block {
+            margin-bottom: 26px;
+        }
+        .question-title {
+            font-size: 1.14em;
+            margin-bottom: 14px;
+            line-height: 1.3;
+        }
+        .choices label {
+            display: block;
+            margin-bottom: 9px;
+            padding: 9px 10px 9px 38px;
+            border-radius: 6px;
+            background: #f6f7fc;
+            cursor: pointer;
+            position: relative;
+            transition: background .15s;
+        }
+        .choices input[type="radio"] {
+            position: absolute;
+            margin-left: -28px;
+            margin-top: 1px;
+        }
+        .choices label:hover, .choices label.selected {
+            background: #eef2fa;
+        }
+        .navigation {
+            text-align: center;
+            margin-top: 15px;
+            margin-bottom: 12px;
+        }
+        button {
+            background: #4267b2;
+            color: #fff;
+            border: none;
+            outline: none;
+            padding: 10px 22px;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: 500;
+            margin: 0 8px 0 0;
+            cursor: pointer;
+            transition: background 0.13s;
+        }
+        button:disabled {
+            background: #bfcbe3;
+            cursor: default;
+        }
+        #submitBtn {
+            background: #27861a;
+            margin-left: 0;
+            margin-top: 12px;
+        }
+        #submitBtn:disabled {
+            background: #a3cfa3;
+        }
+        .result {
+            margin-top: 16px;
+            font-size: 1.2em;
+            font-weight: 500;
+            color: #1b374d;
+            background: #ebf8eb;
+            border-left: 4px solid #27861a;
+            padding: 16px 18px;
+            border-radius: 7px;
+        }
+        .answer-key {
+            margin-top: 18px;
+        }
+        .answer-key-title {
+            font-weight: 700;
+            color: #34495e;
+            margin-bottom: 8px;
+        }
+        ol.answer-list {
+            margin-top: 0;
+            padding-left: 22px;
+        }
+        .answer-list li {
+            margin-bottom: 7px;
+            color: #33415c;
+        }
+        .correct {
+            color: #23850a;
+            font-weight: 600;
+        }
+        footer {
+            margin-top: auto;
+            padding: 16px 8px;
+            background: #f0f2f7;
+            text-align: center;
+            font-size: 1.02em;
+            color: #8f99ac;
+            letter-spacing: 0.08em;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 18px 6px 18px 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <span class="date">Date: 2026-02-03</span>
+        <h1>VAN Protocol Quiz</h1>
+        <div class="subheading">
+            Challenge yourself with 30 difficult multiple-choice questions about scam, misrepresentation, and spam as they relate to Meta's UFAC GTM protocols (VAN - Violating Actor Networks).
+            <br>Enter your name to personalize your results. You must score at least 80% to PASS.
+            <br>Navigate, select answers, and submit to see your score and correct responses!
+        </div>
+        <div style="margin-bottom:20px;text-align:center;">
+            <label for="username" style="font-weight:500;">Your Name:</label>
+            <input type="text" id="username" maxlength="40" placeholder="Enter your name"
+                style="font-size:1em;padding:6px 12px;border-radius:5px;border:1px solid #c7d1e3;margin-left:10px;width:60%;max-width:240px;">
+        </div>
+        <div id="quizArea"></div>
+        <div class="navigation" id="navArea">
+            <button id="prevBtn" onclick="prevQuestion()" disabled>Previous</button>
+            <button id="nextBtn" onclick="nextQuestion()">Next</button>
+            <button id="submitBtn" onclick="submitQuiz()" style="display:none;">Submit</button>
+        </div>
+        <div id="resultArea"></div>
+    </div>
+    <footer>
+        VAN Protocol Quiz &mdash; Date: 2026-02-03
+    </footer>
+    <script>
+    // VAN Protocol Quiz Questions
+    const questions = [
+        // Original 10 questions (Mixed VAN context)
+        {
+            question: "Which combination of signals is typically required to consider a network as “strongly connected” in a VAN investigation?",
+            choices: [
+                "A) 1 strong signal and 1 medium signal",
+                "B) 2 strong signals",
+                "C) 1 strong and 2 medium signals",
+                "D) Either B or C"
+            ],
+            answer: 3
+        },
+        {
+            question: "What is the primary purpose of the Violating Actor Network (VAN) protocol?",
+            choices: [
+                "A) To identify compromised accounts",
+                "B) To prevent actors and networks from using multiple entities to carry out harmful behavior or evade enforcement",
+                "C) To detect spam content",
+                "D) To monitor ad performance"
+            ],
+            answer: 1
+        },
+        {
+            question: "Which of the following is NOT considered a strong asset signal in VAN investigations?",
+            choices: [
+                "A) Shared DATR and password",
+                "B) Shared confirmed contact details",
+                "C) Shared imported contacts",
+                "D) Shared devices/IP/ASN"
+            ],
+            answer: 2
+        },
+        {
+            question: "If two entities share the same device cookie (DATR) and have posted the same photos, what does this indicate?",
+            choices: [
+                "A) They are likely unrelated",
+                "B) They are strongly connected",
+                "C) They are weakly connected",
+                "D) They are false positives"
+            ],
+            answer: 1
+        },
+        {
+            question: "What is the role of “Expert Review” in the VAN decision process?",
+            choices: [
+                "A) To automate enforcement decisions",
+                "B) To holistically review all signals and account activity before deciding on VAN violation",
+                "C) To escalate cases to legal",
+                "D) To only review active entities"
+            ],
+            answer: 1
+        },
+        {
+            question: "Which of the following could be a false positive signal in a VAN investigation?",
+            choices: [
+                "A) Shared device-linked accounts accessed at an Internet Café",
+                "B) Shared DATR and password",
+                "C) Shared confirmed contact details",
+                "D) Shared group membership"
+            ],
+            answer: 0
+        },
+        {
+            question: "What does SUMA stand for in the context of VAN investigations?",
+            choices: [
+                "A) Single User Multiple Accounts",
+                "B) Shared User Multiple Assets",
+                "C) Suspicious User Multiple Activities",
+                "D) Strong User Multiple Accounts"
+            ],
+            answer: 0
+        },
+        {
+            question: "Which signal category provides information about the intended audience that assets in a network are trying to engage with?",
+            choices: [
+                "A) Assets",
+                "B) Behavior",
+                "C) Target",
+                "D) False Positives"
+            ],
+            answer: 2
+        },
+        {
+            question: "In the context of VAN, what is a “Seed Entity”?",
+            choices: [
+                "A) The entity with the most violations",
+                "B) The starting point of VAN investigations, compared to linked entities",
+                "C) The entity with the most friends",
+                "D) The entity with the highest SUMA score"
+            ],
+            answer: 1
+        },
+        {
+            question: "Why is it important to consider both active and inactive entities during a VAN review?",
+            choices: [
+                "A) Inactive entities are always benign",
+                "B) Actors/networks often hold backup accounts/entities to use in case of enforcement",
+                "C) Only active entities can violate policies",
+                "D) Inactive entities cannot be linked to violations"
+            ],
+            answer: 1
+        },
+        // 10 Scam-related questions
+        {
+            question: "Which action is most likely to indicate scam behavior in a VAN network under Meta’s UFAC GTM protocol?",
+            choices: [
+                "A) Regular posts promoting social gatherings",
+                "B) Coordinated accounts pushing misleading investment opportunities",
+                "C) Sharing memes in private groups",
+                "D) Pages with accurate business contact details"
+            ],
+            answer: 1
+        },
+        {
+            question: "What is a common tactic used by scam networks to evade detection on Meta platforms?",
+            choices: [
+                "A) Use of public verified accounts only",
+                "B) Rotating asset ownership among multiple entities",
+                "C) Posting entirely unlinked content",
+                "D) Avoiding all group interactions"
+            ],
+            answer: 1
+        },
+        {
+            question: "The use of lookalike pages with nearly identical names and branding can most likely indicate:",
+            choices: [
+                "A) A legitimate business expansion",
+                "B) Scam intent to confuse and defraud users",
+                "C) Official fan pages",
+                "D) No violation at all"
+            ],
+            answer: 1
+        },
+        {
+            question: "Scam networks often use messaging features in which way to violate Meta’s protocols?",
+            choices: [
+                "A) Only for customer service requests",
+                "B) Mass messaging to solicit money or personal info",
+                "C) Messenger bots for FAQ",
+                "D) Announcing local events"
+            ],
+            answer: 1
+        },
+        {
+            question: "On Meta, which VAN signal would be especially important if two entities coordinate to redirect users to external sites selling fraudulent goods?",
+            choices: [
+                "A) Shared device cookies only",
+                "B) Cross-entity posting and shared tracking pixels",
+                "C) Having similar profile pictures",
+                "D) No signals needed"
+            ],
+            answer: 1
+        },
+        {
+            question: "When investigating a suspected scam group, which false positive must be carefully excluded?",
+            choices: [
+                "A) High posting frequency on legitimate business pages",
+                "B) Same IP address for multiple family member accounts",
+                "C) Coordinated content sharing about charity drives",
+                "D) Verified payment tokens"
+            ],
+            answer: 1
+        },
+        {
+            question: "What assets are commonly manipulated by scam VANs on Meta?",
+            choices: [
+                "A) Likes and comments only",
+                "B) Ads, payment tokens, linked WhatsApp/Instagram accounts",
+                "C) Page theme colors",
+                "D) Random hashtags"
+            ],
+            answer: 1
+        },
+        {
+            question: "A key behavioral signal that flags a scam network is:",
+            choices: [
+                "A) Ongoing, authentic user engagement",
+                "B) Identical scripts sent by many accounts to new contacts",
+                "C) Non-overlapping industries",
+                "D) Regular sponsored posts"
+            ],
+            answer: 1
+        },
+        {
+            question: "When reviewing payment flows in a suspected VAN scam, which is most suspicious?",
+            choices: [
+                "A) Verified bank accounts only used for salaries",
+                "B) Sudden shifts in payout recipients tightly linked to entity changes",
+                "C) Transparent invoices to known businesses",
+                "D) Normal subscription processing"
+            ],
+            answer: 1
+        },
+        {
+            question: "Scam actors attempt to exploit which Meta feature for quick victim acquisition?",
+            choices: [
+                "A) Meta’s encrypted data transfer",
+                "B) Automated page creation with third-party bots",
+                "C) Long-form blog posting",
+                "D) FB Marketplace official sale flow"
+            ],
+            answer: 1
+        },
+        // 5 Misrepresentation questions
+        {
+            question: "Under Meta UFAC GTM, which conduct characterizes misrepresentation within a VAN context?",
+            choices: [
+                "A) Editing public posts for grammar errors",
+                "B) Operating multiple entities claiming false or inconsistent business identities",
+                "C) Regular admin handovers with documentation",
+                "D) Posting in several time zones"
+            ],
+            answer: 1
+        },
+        {
+            question: "What False Positive should be taken into account when assessing misrepresentation violations?",
+            choices: [
+                "A) Accounts run by two business partners with shared permission",
+                "B) Change of admin due to business acquisition",
+                "C) Entities declaring actual physical office addresses",
+                "D) Use of official support channels"
+            ],
+            answer: 1
+        },
+        {
+            question: "Which of the following methods do misrepresenting networks use to gain trust?",
+            choices: [
+                "A) Transparent policy info on pages",
+                "B) Impersonating established brands or public figures",
+                "C) Verified phone numbers",
+                "D) Frequent two-factor authentication"
+            ],
+            answer: 1
+        },
+        {
+            question: "A significant signal for misrepresentation in a VAN is:",
+            choices: [
+                "A) Legitimate testimonials posted publicly",
+                "B) Recurring changes in name/contact info without validation",
+                "C) Seasonally themed marketing",
+                "D) Routine policy review"
+            ],
+            answer: 1
+        },
+        {
+            question: "How should Meta teams proceed before enforcement for misrepresentation under VAN?",
+            choices: [
+                "A) Automate bans based on reported posts only",
+                "B) Conduct expert review of all signals and substantiate discrepancies",
+                "C) Only enforce on pages with low engagement",
+                "D) Accept user reports without investigation"
+            ],
+            answer: 1
+        },
+        // 5 Spam questions
+        {
+            question: "Which behavior in a VAN network best fits Meta’s definition of spam?",
+            choices: [
+                "A) Occasional event posting",
+                "B) Large-scale posting of repetitive content with little variation to wide audiences",
+                "C) Monthly business updates",
+                "D) Responding to comments promptly"
+            ],
+            answer: 1
+        },
+        {
+            question: "When detecting spam signals, why should shared device assets be scrutinized?",
+            choices: [
+                "A) Most spam actors avoid device sharing",
+                "B) Device sharing can indicate automation for mass distribution",
+                "C) Only usage patterns matter",
+                "D) No relevance for assets"
+            ],
+            answer: 1
+        },
+        {
+            question: "What does Meta classify as 'network-level spam' in the VAN context?",
+            choices: [
+                "A) Multiple authentic users discussing trending topics",
+                "B) Groups of interconnected accounts posting promotional links repeatedly",
+                "C) Posting official news articles",
+                "D) Private event invites"
+            ],
+            answer: 1
+        },
+        {
+            question: "Spam networks may exploit which Meta product most frequently for propagation?",
+            choices: [
+                "A) FB Marketplace reviews",
+                "B) Messenger and WhatsApp broadcast lists",
+                "C) Meta Blueprint training",
+                "D) Meta Business Suite reporting"
+            ],
+            answer: 1
+        },
+        {
+            question: "Why is it important to analyze posting speeds in suspected spam VANs?",
+            choices: [
+                "A) Spam often involves coordinated, automated posting at high speed",
+                "B) Slow posting rates are always suspicious",
+                "C) Official partners post rapidly",
+                "D) Meta disables slow posters"
+            ],
+            answer: 0
+        },
+        // 5 more scam questions (for total 10)
+        {
+            question: "Which type of asset manipulation is central to scam VAN networks on Meta platforms?",
+            choices: [
+                "A) Schedule content calendars",
+                "B) Falsified payment details and ad targeting",
+                "C) Linking legitimate business pages",
+                "D) None of the above"
+            ],
+            answer: 1
+        },
+        {
+            question: "How do scam actors most commonly avoid enforcement after detection?",
+            choices: [
+                "A) By immediately shutting all accounts",
+                "B) By shifting ownership and access to new entities with historical ties",
+                "C) By providing full business verification",
+                "D) By disabling all assets"
+            ],
+            answer: 1
+        },
+        {
+            question: "Which is a weak signal of potential scam, requiring further corroboration before enforcement?",
+            choices: [
+                "A) Shared geographic location",
+                "B) Coincidental login times with unrelated activity",
+                "C) Device access from the same city park",
+                "D) All of the above"
+            ],
+            answer: 3
+        },
+        {
+            question: "Which additional review is needed before tagging coordinated lending offers as a scam VAN?",
+            choices: [
+                "A) Confirm cross-platform links (WhatsApp/Instagram) and payment flows",
+                "B) Only check public profiles",
+                "C) Enforce based on external site only",
+                "D) Ignore signals from Messenger"
+            ],
+            answer: 0
+        },
+        {
+            question: "An entity posting links to 'instant loans' under multiple page identities most likely indicates:",
+            choices: [
+                "A) Coordinated scam behavior",
+                "B) Regulatory compliance",
+                "C) Normal business practice",
+                "D) High organic reach"
+            ],
+            answer: 0
+        }
+    ];
+
+    let currentQuestion = 0;
+    let userAnswers = Array(questions.length).fill(null);
+
+    function renderQuestion() {
+        const quizArea = document.getElementById('quizArea');
+        quizArea.innerHTML = '';
+        if (currentQuestion < questions.length) {
+            const questionBlock = document.createElement('div');
+            questionBlock.className = "question-block";
+
+            // Question number and text
+            questionBlock.innerHTML = `
+                <div class="question-title">
+                    <b>Question ${currentQuestion + 1} of ${questions.length}:</b><br>${questions[currentQuestion].question}
+                </div>
+            `;
+
+            // Multiple choice answers
+            const choicesDiv = document.createElement('div');
+            choicesDiv.className = "choices";
+            questions[currentQuestion].choices.forEach((choice, idx) => {
+                const checked = userAnswers[currentQuestion] === idx ? "checked" : "";
+                choicesDiv.innerHTML += `
+                    <label class="${checked ? 'selected' : ''}">
+                        <input type="radio" name="choice" value="${idx}" ${checked} onclick="selectAnswer(${idx})">
+                        ${choice}
+                    </label>
+                `;
+            });
+
+            questionBlock.appendChild(choicesDiv);
+            quizArea.appendChild(questionBlock);
+
+            // Update nav buttons
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').disabled = currentQuestion === questions.length - 1;
+            document.getElementById('submitBtn').style.display = currentQuestion === questions.length - 1 ? "inline-block" : "none";
+        }
+        document.getElementById('resultArea').innerHTML = '';
+    }
+
+    function selectAnswer(idx) {
+        userAnswers[currentQuestion] = idx;
+        // Visually highlight selected label
+        const labels = document.querySelectorAll('.choices label');
+        labels.forEach((lbl, i) => {
+            if(i === idx) {
+                lbl.classList.add('selected');
+            } else {
+                lbl.classList.remove('selected');
+            }
+        });
+    }
+
+    function nextQuestion() {
+        if(currentQuestion < questions.length - 1) {
+            currentQuestion++;
+            renderQuestion();
+        }
+    }
+
+    function prevQuestion() {
+        if(currentQuestion > 0) {
+            currentQuestion--;
+            renderQuestion();
+        }
+    }
+
+    function submitQuiz() {
+        // Score calculation
+        let score = 0;
+        userAnswers.forEach((ans, idx) => {
+            if(ans === questions[idx].answer) score++;
+        });
+
+        // Display result & answer key
+        const resultArea = document.getElementById('resultArea');
+        resultArea.innerHTML = `
+            <div class="result">
+                You scored <span class="correct">${score}</span> out of ${questions.length}.
+                <br><small>${score === questions.length ? 'Excellent work!':'Check the correct answers and try again for a perfect score.'}</small>
+            </div>
+            <div class="answer-key">
+                <div class="answer-key-title">Correct Answers:</div>
+                <ol class="answer-list">
+                    ${questions.map((q, idx) =>
+                        `<li><b>Q${idx+1}:</b> <span class="correct">${q.choices[q.answer]}</span></li>`).join('')}
+                </ol>
+            </div>
+        `;
+
+        document.getElementById('quizArea').innerHTML = '';
+        document.getElementById('navArea').style.display = 'none';
+    }
+
+    window.onload = function() {
+        renderQuestion();
+    };
+    </script>
+</body>
+</html>
