@@ -8,32 +8,32 @@
         html, body {
             margin: 0;
             padding: 0;
-            background: #f5f6fa;
+            background: #18171a;
         }
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
-            color: #2d3a4b;
+            color: #e7eaff;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
         .container {
-            max-width: 540px;
+            max-width: 560px;
             margin: 40px auto 0 auto;
-            background: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 3px 14px rgba(34, 55, 150, 0.11);
-            padding: 32px 24px 32px 24px;
+            background: #22212a;
+            border-radius: 12px;
+            box-shadow: 0 3px 14px rgba(34, 55, 150, 0.12);
+            padding: 36px 26px 36px 26px;
         }
         h1 {
             text-align: center;
             margin-bottom: 10px;
-            color: #4267b2;
+            color: #8dc7ff;
             letter-spacing: -1px;
         }
         .subheading {
             text-align: center;
-            color: #34495e;
+            color: #c3dafe;
             font-size: 1.07em;
             margin-bottom: 28px;
             margin-top: 5px;
@@ -152,23 +152,27 @@
     <div class="container">
         <span class="date">Date: 2026-02-03</span>
         <h1>VAN Protocol Quiz</h1>
-        <div class="subheading">
-            Challenge yourself with 30 difficult multiple-choice questions about scam, misrepresentation, and spam as they relate to Meta's UFAC GTM protocols (VAN - Violating Actor Networks).
-            <br>Enter your name to personalize your results. You must score at least 80% to PASS.
-            <br>Navigate, select answers, and submit to see your score and correct responses!
+        <div class="subheading" id="subtitle">
+            Challenge yourself with 30 multiple-choice questions about scam, misrepresentation, and spam in Meta's UFAC GTM protocols (VAN - Violating Actor Networks).
+            <br>Enter your name to personalize results. <b>80% (24/30) correct answers required to PASS.</b>
         </div>
-        <div style="margin-bottom:20px;text-align:center;">
-            <label for="username" style="font-weight:500;">Your Name:</label>
-            <input type="text" id="username" maxlength="40" placeholder="Enter your name"
-                style="font-size:1em;padding:6px 12px;border-radius:5px;border:1px solid #c7d1e3;margin-left:10px;width:60%;max-width:240px;">
+
+        <div class="tabbar" id="tabbar" style="display:none;">
+            <button class="tab-btn active" id="tabQuiz" onclick="gotoTab('quiz')" style="display:none;">Quiz</button>
+            <button class="tab-btn" id="tabResult" onclick="gotoTab('result')" style="display:none;">Results</button>
+            <button class="tab-btn" id="tabAnswers" onclick="gotoTab('answers')" style="display:none;">Correct Answers</button>
+            <button class="tab-btn" id="tabSummary" onclick="gotoTab('summary')" style="display:none;">Attempts Log</button>
         </div>
-        <div id="quizArea"></div>
-        <div class="navigation" id="navArea">
+        <div id="welcomeArea"></div>
+        <div id="quizArea" style="display:none;"></div>
+        <div class="navigation" id="navArea" style="display:none;">
             <button id="prevBtn" onclick="prevQuestion()" disabled>Previous</button>
             <button id="nextBtn" onclick="nextQuestion()">Next</button>
             <button id="submitBtn" onclick="submitQuiz()" style="display:none;">Submit</button>
         </div>
-        <div id="resultArea"></div>
+        <div id="resultArea" style="display:none;"></div>
+        <div id="answersArea" style="display:none;"></div>
+        <div id="summaryArea" style="display:none;"></div>
     </div>
     <footer>
         VAN Protocol Quiz &mdash; Date: 2026-02-03
